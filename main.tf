@@ -54,25 +54,25 @@ resource "null_resource" "jfrog_repo_check" {
     environment = {
       JFROG_OIDC_TOKEN = "TFC_WORKLOAD_IDENTITY_TOKEN_JFROG"
     }
+command = <<EOT
+  echo "📦 Fetching repository list from ${var.jfrog_url}..." > curl_repo.log
 
-    command = <<EOT
-      echo "📦 Fetching repository list from ${var.jfrog_url}..." > curl_repo.log
+  curl -s -w "%%{http_code}" -o curl_repo.json \
+    -H "Authorization: Bearer $JFROG_OIDC_TOKEN" \
+    "${var.jfrog_url}/artifactory/api/repositories" > curl_status_code.txt
 
-      curl -s -w "%{http_code}" -o curl_repo.json \
-        -H "Authorization: Bearer $JFROG_OIDC_TOKEN" \
-        "${var.jfrog_url}/artifactory/api/repositories" > curl_status_code.txt
+  STATUS=$(cat curl_status_code.txt)
 
-      STATUS=$(cat curl_status_code.txt)
+  if [ "$STATUS" -eq "200" ]; then
+    echo "✅ Repository list fetched successfully." >> curl_repo.log
+    echo "SUCCESS" > curl_status_flag.log
+  else
+    echo "❌ Failed to fetch repositories. HTTP $STATUS" >> curl_repo.log
+    echo "FAILED" > curl_status_flag.log
+    exit 1
+  fi
+EOT
 
-      if [ "$STATUS" -eq "200" ]; then
-        echo "✅ Repository list fetched successfully." >> curl_repo.log
-        echo "SUCCESS" > curl_status_flag.log
-      else
-        echo "❌ Failed to fetch repositories. HTTP $STATUS" >> curl_repo.log
-        echo "FAILED" > curl_status_flag.log
-        exit 1
-      fi
-    EOT
   }
 
   triggers = {
