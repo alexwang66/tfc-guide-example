@@ -58,7 +58,7 @@ command = <<EOT
   echo "📦 Fetching repository list from ${var.jfrog_url}..." > curl_repo.log
 
   curl -s -w "%%{http_code}" -o curl_repo.json \
-    -H "Authorization: Bearer $JFROG_OIDC_TOKEN" \
+    -H "Authorization: Bearer $TFC_WORKLOAD_IDENTITY_TOKEN_JFROG" \
     "${var.jfrog_url}/artifactory/api/repositories?type=local" > curl_status_code.txt
 
   STATUS=$(cat curl_status_code.txt)
