@@ -51,18 +51,32 @@ variable "jfrog_username" {
 
 resource "null_resource" "helm_repo_add" {
   provisioner "local-exec" {
-    environment = {
-      JFROG_OIDC_TOKEN = "TFC_WORKLOAD_IDENTITY_TOKEN_JFROG"
-    }
-
     command = <<EOT
+      echo "🔧 Checking Helm version..."
+      helm version || { echo "❌ Helm is not installed or not working."; exit 1; }
+
+      echo "📦 Adding Helm repo: ${var.jfrog_repo_name}"
       echo "$JFROG_OIDC_TOKEN" > /tmp/jfrog_oidc_token.jwt
       helm repo add ${var.jfrog_repo_name} ${var.jfrog_helm_repo_url} \
         --username "alexwang" \
         --password "$JFROG_OIDC_TOKEN"
-    EOT
 
+      if [ $? -ne 0 ]; then
+        echo "❌ Failed to add Helm repo!"
+        exit 1
+      else
+        echo "✅ Helm repo '${var.jfrog_repo_name}' added successfully."
+      fi
+
+      echo "🔄 Updating Helm repo cache..."
+      helm repo update
+
+      if [ $? -ne 0 ]; then
+        echo "❌ Helm repo update failed!"
+        exit 1
+      else
+        echo "✅ Helm repo update successful."
+      fi
+    EOT
   }
 }
-
-
