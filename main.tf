@@ -20,6 +20,17 @@ variable "jfrog_username" {
   default     = "alexwang"  # 或你本地使用的用户名
 }
 
+variable "jfrog_repo_name" {
+  description = "The name to assign to the Helm repository"
+  type        = string
+}
+
+variable "jfrog_helm_repo_url" {
+  description = "The full URL of the JFrog Helm virtual repository"
+  type        = string
+}
+
+
 variable "jfrog_token" {
   description = "JFrog access token (used for local execution)"
   type        = string
