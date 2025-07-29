@@ -46,6 +46,7 @@ variable "jfrog_helm_repo_url" {
 variable "jfrog_username" {
   description = "JFrog username"
   type        = string
+  default     = "alexwang"
 }
 
 resource "null_resource" "helm_repo_add" {
@@ -57,7 +58,7 @@ resource "null_resource" "helm_repo_add" {
     command = <<EOT
       echo "$JFROG_OIDC_TOKEN" > /tmp/jfrog_oidc_token.jwt
       helm repo add ${var.jfrog_repo_name} ${var.jfrog_helm_repo_url} \
-        --username "oidc" \
+        --username "alexwang" \
         --password "$JFROG_OIDC_TOKEN"
     EOT
   }
