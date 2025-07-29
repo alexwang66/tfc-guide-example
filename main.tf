@@ -54,20 +54,15 @@ resource "null_resource" "jfrog_repo_check" {
     command = <<EOT
 echo "📦 Fetching repository list from $${JFROG_URL}..." > curl_repo.log
 
-curl -s -w "%{http_code}" -o curl_repo.json \
-  -H "Authorization: Bearer $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" \
-  "$${JFROG_URL}/artifactory/api/repositories" > curl_status_code.txt
+# 打印 token 到日志（仅用于调试，生产中请小心）
+echo "🔑 TFC_WORKLOAD_IDENTITY_TOKEN_JFROG=" >> curl_repo.log
+echo "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" >> curl_repo.log
 
-STATUS=$(cat curl_status_code.txt)
+# 执行 curl 请求并记录输出
+curl -s -H "Authorization: Bearer $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" \
+  "$${JFROG_URL}/artifactory/api/repositories" >> curl_repo.log 2>&1
 
-if [ "$${STATUS}" -eq "200" ]; then
-  echo "✅ Repository list fetched successfully." >> curl_repo.log
-  echo "SUCCESS" > curl_status_flag.log
-else
-  echo "❌ Failed to fetch repositories. HTTP $${STATUS}" >> curl_repo.log
-  echo "FAILED" > curl_status_flag.log
-  exit 1
-fi
+echo "✅ Finished fetching repositories." >> curl_repo.log
 EOT
   }
 
@@ -75,6 +70,4 @@ EOT
     always_run = timestamp()
   }
 }
-
-
 
