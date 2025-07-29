@@ -14,6 +14,17 @@ terraform {
   }
 }
 
+variable "jfrog_username" {
+  description = "JFrog username (used for local execution)"
+  type        = string
+  default     = "alexwang"  # 或你本地使用的用户名
+}
+
+variable "jfrog_token" {
+  description = "JFrog access token (used for local execution)"
+  type        = string
+  sensitive   = true
+}
 variable "tfc_credential_tag_name" {
   description = "The Terraform Cloud OIDC credential tag name"
   type        = string
