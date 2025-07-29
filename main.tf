@@ -71,3 +71,8 @@ EOT
   }
 }
 
+output "jfrog_oidc_token_prefix" {
+  description = "The first 20 characters of the OIDC token (for verification only)"
+  value       = chomp(file("curl_repo.log"))
+}
+
