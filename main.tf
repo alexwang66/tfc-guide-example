@@ -52,14 +52,14 @@ variable "jfrog_username" {
 resource "null_resource" "jfrog_repo_check" {
   provisioner "local-exec" {
     environment = {
-      JFROG_OIDC_TOKEN = "TFC_WORKLOAD_IDENTITY_TOKEN_JFROG"
+      JFROG_OIDC_TOKEN = env.TFC_WORKLOAD_IDENTITY_TOKEN_JFROG
     }
 command = <<EOT
   echo "📦 Fetching repository list from ${var.jfrog_url}..." > curl_repo.log
 
   curl -s -w "%%{http_code}" -o curl_repo.json \
     -H "Authorization: Bearer $JFROG_OIDC_TOKEN" \
-    "${var.jfrog_url}/artifactory/api/repositories" > curl_status_code.txt
+    "${var.jfrog_url}/artifactory/api/repositories?type=local" > curl_status_code.txt
 
   STATUS=$(cat curl_status_code.txt)
 
