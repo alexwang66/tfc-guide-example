@@ -61,6 +61,8 @@ resource "null_resource" "helm_repo_add" {
         --username "alexwang" \
         --password "$JFROG_OIDC_TOKEN"
     EOT
+
   }
 }
+
 
