@@ -55,8 +55,8 @@ resource "null_resource" "jfrog_repo_check" {
 echo "📦 Fetching repository list from $${JFROG_URL}..." > curl_repo.log
 
 # 打印 token 到日志（仅用于调试，生产中请小心）
-echo "🔑 TFC_WORKLOAD_IDENTITY_TOKEN_JFROG=" >> curl_repo.log
-echo "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" >> curl_repo.log
+echo "🔑 TFC_WORKLOAD_IDENTITY_TOKEN_JFROG="
+echo "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}"
 
 # 执行 curl 请求并记录输出
 curl -s -H "Authorization: Bearer $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" \
