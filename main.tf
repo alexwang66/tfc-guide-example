@@ -30,7 +30,6 @@ variable "jfrog_helm_repo_url" {
   type        = string
 }
 
-
 variable "jfrog_token" {
   description = "JFrog access token (used for local execution)"
   type        = string
