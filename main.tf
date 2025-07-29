@@ -14,11 +14,19 @@ terraform {
   }
 }
 
+variable "tfc_credential_tag_name" {
+  description = "The Terraform Cloud OIDC credential tag name"
+  type        = string
+  default     = "JFROG"
+}
+
+
 provider "platform" {
   url = "https://hkjctest.jfrog.io"
   oidc_provider_name = "terraform-cloud"
   tfc_credential_tag_name = "JFROG"
 }
+
 
 variable "jfrog_url" {
   description = "JFrog Artifactory base URL"
@@ -38,12 +46,6 @@ variable "jfrog_helm_repo_url" {
 variable "jfrog_username" {
   description = "JFrog username"
   type        = string
-}
-
-variable "jfrog_token" {
-  description = "JFrog access token or password"
-  type        = string
-  sensitive   = true
 }
 
 resource "null_resource" "helm_repo_add" {
