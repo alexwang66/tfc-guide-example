@@ -23,7 +23,7 @@ variable "tfc_credential_tag_name" {
 
 provider "platform" {
   url = "https://hkjctest.jfrog.io"
-  oidc_provider_name = "terraform-cloud"
+  oidc_provider_name = "jfrog-hkjc-tfc-nonprod"
   tfc_credential_tag_name = "JFROG"
 }
 
