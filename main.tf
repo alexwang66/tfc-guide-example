@@ -20,6 +20,26 @@ provider "platform" {
   tfc_credential_tag_name = var.tfc_credential_tag_name
 }
 
+variable "jfrog_url" {
+  description = "JFrog Artifactory base URL"
+  type        = string
+}
+
+variable "jfrog_repo_name" {
+  description = "Name to assign to the Helm repo"
+  type        = string
+}
+
+variable "jfrog_helm_repo_url" {
+  description = "JFrog Helm repository URL"
+  type        = string
+}
+
+variable "jfrog_username" {
+  description = "JFrog username"
+  type        = string
+  default     = "alexwang"
+}
 locals {
   use_oidc       = can(env("TFC_WORKLOAD_IDENTITY_TOKEN_JFROG"))
   helm_username  = local.use_oidc ? "oidc" : var.jfrog_username
