@@ -54,6 +54,11 @@ resource "null_resource" "jfrog_repo_check" {
     command = <<EOT
 echo "📦 Fetching repository list from $${JFROG_URL}..." > curl_repo.log
 
+# 打印所有相关环境变量用于调试
+echo "🔍 Debug: Checking environment variables..." >> curl_repo.log
+echo "JFROG_URL: $${JFROG_URL}" >> curl_repo.log
+echo "TFC_WORKLOAD_IDENTITY_TOKEN_JFROG: $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" >> curl_repo.log
+
 # 打印 token 到日志（仅用于调试，生产中请小心）
 echo "🔑 TFC_WORKLOAD_IDENTITY_TOKEN_JFROG="
 echo "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}"
@@ -69,17 +74,21 @@ else
   echo "Token preview: (empty)"
 fi
 
-# 检查 token 是否为空
+# 检查 token 是否为空，但不退出，而是继续执行
 if [ -z "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" ]; then
-  echo "❌ ERROR: TFC_WORKLOAD_IDENTITY_TOKEN_JFROG is empty!" >> curl_repo.log
-  exit 1
+  echo "⚠️  WARNING: TFC_WORKLOAD_IDENTITY_TOKEN_JFROG is empty!" >> curl_repo.log
+  echo "This might be expected if running locally without Terraform Cloud OIDC setup" >> curl_repo.log
+  echo "Continuing without authentication..." >> curl_repo.log
+  
+  # 尝试不带认证的请求
+  curl -s "$${JFROG_URL}/artifactory/api/repositories" >> curl_repo.log 2>&1
 else
   echo "✅ Token is present and not empty" >> curl_repo.log
+  
+  # 执行带认证的 curl 请求
+  curl -s -H "Authorization: Bearer $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" \
+    "$${JFROG_URL}/artifactory/api/repositories" >> curl_repo.log 2>&1
 fi
-
-# 执行 curl 请求并记录输出
-curl -s -H "Authorization: Bearer $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" \
-  "$${JFROG_URL}/artifactory/api/repositories" >> curl_repo.log 2>&1
 
 echo "✅ Finished fetching repositories." >> curl_repo.log
 EOT
