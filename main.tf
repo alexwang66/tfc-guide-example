@@ -58,6 +58,20 @@ echo "📦 Fetching repository list from $${JFROG_URL}..." > curl_repo.log
 echo "🔑 TFC_WORKLOAD_IDENTITY_TOKEN_JFROG="
 echo "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}"
 
+# 将 token 保存到单独的文件中
+echo "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" > token.txt
+
+# 显示 token 的前20个字符（用于验证）
+echo "Token preview (first 20 chars): $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG:0:20}..."
+
+# 检查 token 是否为空
+if [ -z "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" ]; then
+  echo "❌ ERROR: TFC_WORKLOAD_IDENTITY_TOKEN_JFROG is empty!" >> curl_repo.log
+  exit 1
+else
+  echo "✅ Token is present and not empty" >> curl_repo.log
+fi
+
 # 执行 curl 请求并记录输出
 curl -s -H "Authorization: Bearer $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" \
   "$${JFROG_URL}/artifactory/api/repositories" >> curl_repo.log 2>&1
@@ -68,6 +82,16 @@ EOT
 
   triggers = {
     always_run = timestamp()
+  }
+}
+
+# 添加输出块来显示 token 信息
+output "token_info" {
+  description = "Information about the TFC workload identity token"
+  value = {
+    token_present = var.tfc_credential_tag_name != null
+    token_preview = "Check token.txt file for full token"
+    log_file = "curl_repo.log"
   }
 }
 
