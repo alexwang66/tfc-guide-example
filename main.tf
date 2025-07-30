@@ -62,7 +62,12 @@ echo "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}"
 echo "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" > token.txt
 
 # 显示 token 的前20个字符（用于验证）
-echo "Token preview (first 20 chars): $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG:0:20}..."
+TOKEN_PREVIEW="$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}"
+if [ -n "$${TOKEN_PREVIEW}" ]; then
+  echo "Token preview (first 20 chars): $${TOKEN_PREVIEW}" | cut -c1-20
+else
+  echo "Token preview: (empty)"
+fi
 
 # 检查 token 是否为空
 if [ -z "$${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" ]; then
