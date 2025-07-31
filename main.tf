@@ -25,7 +25,7 @@ resource "platform_oidc_configuration" "my-generic-oidc-configuration" {
   description   = "OIDC config for Terraform Cloud"
   issuer_url    = "https://app.terraform.io"
   provider_type = "generic"
-  audience      = var.tfc_credential_tag_name  # 与 provider 匹配
+  audience      = "alex-tfc"  # 与 provider 匹配
 }
 
 provider "platform" {
