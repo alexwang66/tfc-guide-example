@@ -27,7 +27,6 @@ provider "platform" {
   tfc_credential_tag_name = "JFROG"
 }
 
-
 variable "jfrog_url" {
   description = "JFrog Artifactory base URL"
   type        = string
