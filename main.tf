@@ -99,6 +99,7 @@ EOT
   }
 }
 
+
 # 添加输出块来显示 token 信息
 output "token_info" {
   description = "Information about the TFC workload identity token"
