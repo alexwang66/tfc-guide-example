@@ -7,9 +7,9 @@ terraform {
   }
 
   required_providers {
-    platform = {
-      source  = "jfrog/platform"
-      version = "2.2.5"
+    artifactory = {
+      source  = "jfrog/artifactory"
+      version = "12.10.0"
     }
   }
 }
@@ -25,10 +25,10 @@ resource "platform_oidc_configuration" "my-generic-oidc-configuration" {
   description   = "OIDC config for Terraform Cloud"
   issuer_url    = "https://app.terraform.io"
   provider_type = "generic"
-  audience      = "alex-tfc"  # 与 provider 匹配
+  audience      = "JFROG"  # 与 provider 匹配
 }
 
-provider "platform" {
+provider "artifactory" {
   url = "https://hkjctest.jfrog.io"
   oidc_provider_name = "alex-tfc"
   tfc_credential_tag_name = "JFROG"
