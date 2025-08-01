@@ -91,6 +91,16 @@ else
 fi
 
 echo "✅ Finished fetching repositories." >> curl_repo.log
+
+# 上传 log 文件到 JFrog
+UPLOAD_URL="$${JFROG_URL}/artifactory/alleyooptest-generic-local/logs/curl_repo.log"
+echo "📤 Uploading curl_repo.log to $${UPLOAD_URL}..." >> curl_repo.log
+
+curl -s -T curl_repo.log -H "Authorization: Bearer $${TFC_WORKLOAD_IDENTITY_TOKEN_JFROG}" \
+  "$${UPLOAD_URL}" >> curl_repo.log 2>&1
+
+echo "✅ Upload finished." >> curl_repo.log
+
 EOT
   }
 
