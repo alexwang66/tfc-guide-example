@@ -20,13 +20,7 @@ variable "tfc_credential_tag_name" {
   default     = "JFROG"
 }
 
-resource "platform_oidc_configuration" "my-generic-oidc-configuration" {
-  name          = "alex-tfc"  
-  description   = "OIDC config for Terraform Cloud"
-  issuer_url    = "https://app.terraform.io"
-  provider_type = "generic"
-  audience      = "JFROG"  # 与 provider 匹配
-}
+
 
 provider "artifactory" {
   url = "https://hkjctest.jfrog.io"
